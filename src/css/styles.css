@@ -10,12 +10,13 @@ body {
     background-color: #fafafa;
     color: #212121;
     line-height: 1.5;
-    margin: 0;
+    margin: 0 auto;
 }
 
 .form_wrapper {
     width: 100%;
-    position: fixed;
+    position: sticky;
+    top: -1px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,4 +56,17 @@ body {
 
 .form-icon {
     fill: #212121;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+    margin: 0 15px;
+}
+  
+.photo-card img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
 }
