@@ -80,7 +80,14 @@ body {
 }
 
 .info {
-    padding-left: 15px;
+    font: inherit;
+    font-weight: 500;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
     color: #212121;
 }
 
