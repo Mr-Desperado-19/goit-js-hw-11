@@ -1,6 +1,8 @@
 import "./css/styles.css";
 import Notiflix from "notiflix";
 import axios from "axios";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
@@ -9,6 +11,7 @@ const loadMoreBtn = document.querySelector('.load-more');
 
 let page = 1;
 let currentQuery = '';
+let lightbox;
 
 form.addEventListener('submit', handleSubmit);
 loadMoreBtn.addEventListener('click', handleLoadMore);
@@ -45,7 +48,7 @@ async function fetchImages(query, page) {
     const { hits, totalHits } = response.data;
     
     if (hits.length === 0) {
-      notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+      Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
       return;
     }
     
@@ -55,10 +58,10 @@ async function fetchImages(query, page) {
       loadMoreBtn.style.display = 'block';
     } else {
       loadMoreBtn.style.display = 'none';
-      notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
   } catch (error) {
-    notiflix.Notify.failure('Oops, something went wrong. Please try again later.');
+    Notiflix.Notify.failure('Oops, something went wrong. Please try again later.');
   }
 }
 
@@ -71,8 +74,8 @@ function renderGallery(images) {
     const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = image;
     
     const card = `
-      <div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" data-source="${largeImageURL}" />
+      <a href="${largeImageURL}" class="photo-card">
+        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
         <div class="info">
           <p class="info-item">
             <b>Likes:</b> ${likes}
@@ -87,23 +90,17 @@ function renderGallery(images) {
             <b>Downloads:</b> ${downloads}
           </p>
         </div>
-      </div>
+      </a>
     `;
     
     gallery.insertAdjacentHTML('beforeend', card);
   });
   
-  const photoCards = document.querySelectorAll('.photo-card');
-  
-  photoCards.forEach(photoCard => {
-    const image = photoCard.querySelector('img');
-    const imageUrl = image.dataset.source;
-    
-    image.addEventListener('click', event => {
-      event.preventDefault();
-      Notiflix.ImageViewer.open(imageUrl);
-    });
-  });
+  if (lightbox) {
+    lightbox.refresh();
+  } else {
+    lightbox = new SimpleLightbox('.gallery a', { /* options */ });
+  }
 }
 
 function handleLoadMore() {
